@@ -1,39 +1,39 @@
-import { IsString } from "class-validator";
+import { IsEmail, IsString } from "class-validator";
 import { IsBoolean, IsInt } from "class-validator";
-import { EntityIdDTO } from "../entityIdDTO/entityId.dto";
 
 
 export class UserDTO{
 
     @IsInt()
-    id: number = 0;
+    readonly id: number;
 
     @IsString()
-    name: string = "";
- 
+    @IsEmail()
+    readonly name: string;
+    
     @IsInt()
-    age: number = 0;
+    readonly age: number;
 
     @IsString()
-    email: string = "";
+    readonly email: string;
 
     @IsString()
-    password: string = "";
+    readonly password: string;
 
     @IsString({ each: true })
     readonly interests: string[];
  
     @IsString()
-    gender: string = "";
+    gender: string;
  
     @IsString()
-    about_me: string = "";
+    about_me: string;
  
     @IsString()
-    work: string = "";
+    work: string;
  
     @IsInt()
-    max_distance: number = 0;
+    max_distance: number;
 
     @IsInt({ each: true })
     location: number[];
@@ -42,10 +42,8 @@ export class UserDTO{
     age_range: number[];
  
     @IsBoolean()
-    privacy: boolean = false;
+    privacy: boolean;
  
     @IsString()
-    photo: string = "";
-
-    // like: EntityIdDTO = null;
+    photo: string;
 }

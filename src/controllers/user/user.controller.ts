@@ -5,7 +5,7 @@ import { UserService } from "src/services/user/user.service";
 import { UseInterceptors, UseGuards } from '@nestjs/common';
 import { AuthGuard } from "src/auth/guards/auth.guard"; 
 
-@UseGuards(AuthGuard)
+
 @Controller('user')
 export class UserController {
 
@@ -15,6 +15,7 @@ export class UserController {
 
     }
 
+    @UseGuards(AuthGuard)
     @Get('profile')
     findUser(
         @Req() req
@@ -23,11 +24,13 @@ export class UserController {
         return this.userService.getUserByToken(token);
     }
 
+    @UseGuards(AuthGuard)
     @Get()
     findAll(){
         return this.userService.findAll()
     }
 
+    @UseGuards(AuthGuard)
     @Get(':id')
     findOne(
         @Param('id') id: number
@@ -42,6 +45,7 @@ export class UserController {
         return this.userService.create(userDTO)
     }
 
+    @UseGuards(AuthGuard)
     @Put(':id')
     update(
         @Param('id') id: number,
@@ -50,6 +54,7 @@ export class UserController {
         return this.userService.update(id, userDTO)
     }
 
+    @UseGuards(AuthGuard)
     @Delete(':id')
     remove(
         @Param('id') id: number

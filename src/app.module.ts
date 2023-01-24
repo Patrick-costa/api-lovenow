@@ -7,7 +7,7 @@ import { EntitiesModule } from './entities.module';
 @Module({
   imports: [EntitiesModule,
     TypeOrmModule.forRoot({
-    type: 'mysql', 
+    type: 'mariadb', 
     host: 'localhost',
     port: 3306,
     username: 'root',
