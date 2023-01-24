@@ -1,8 +1,11 @@
-import { Controller, Get, Body, Post, Param, Put, Delete  } from "@nestjs/common";
+import { Controller, Get, Body, Post, Param, Put, Delete , Req } from "@nestjs/common";
 import { LikeDTO } from "src/dto/like/like.dto";
 import { UserDTO } from "src/dto/user/user.dto";
 import { UserService } from "src/services/user/user.service";
+import { UseInterceptors, UseGuards } from '@nestjs/common';
+import { AuthGuard } from "src/auth/guards/auth.guard"; 
 
+@UseGuards(AuthGuard)
 @Controller('user')
 export class UserController {
 
@@ -10,6 +13,14 @@ export class UserController {
         private userService: UserService,
     ){
 
+    }
+
+    @Get('profile')
+    findUser(
+        @Req() req
+    ){
+        const token = req.headers.authorization.split(' ')[1];
+        return this.userService.getUserByToken(token);
     }
 
     @Get()

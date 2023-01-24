@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserDTO } from "src/dto/user/user.dto";
 import { Interests } from "src/entities/interests/interests";
@@ -7,6 +7,7 @@ import { Location } from "src/entities/location/location";
 import { Connection, Repository } from "typeorm";
 import { AgeRange } from "src/entities/age_range/age_range";
 import * as bcrypt from 'bcrypt';
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class UserService {
@@ -24,8 +25,21 @@ export class UserService {
         @InjectRepository(AgeRange)
         private ageRangeRepository: Repository<AgeRange>,
 
-        private dbconn: Connection
+        private dbconn: Connection,
+
+        private readonly jwtService: JwtService,
     ){}
+
+    async getUserByToken(token: string) {
+        try {
+          const userId = this.jwtService.verify(token).sub;
+          return await this.userRepository.findOne(userId, {
+            relations: ['location','interests', 'age_range']
+          });
+        } catch (err) {
+          throw new HttpException('Invalid token', HttpStatus.FORBIDDEN);
+        }
+      }
 
     findAll(){
         return this.userRepository.find({
@@ -59,14 +73,14 @@ export class UserService {
 
         const salt = await bcrypt.genSalt();
 
-        const hashedPassword = await bcrypt.hash(userDTO.senha, salt);
+        const hashedPassword = await bcrypt.hash(userDTO.password, salt);
 
         const user = this.userRepository.create({
             ...userDTO,
             interests,
             location,
             age_range: ageRange,
-            senha: hashedPassword
+            password: hashedPassword
         });
     
         return this.userRepository.save(user)
@@ -112,9 +126,7 @@ export class UserService {
     }
 
     async findOneByEmail(email: string){
-        const user = await this.userRepository.findOne({
-            where: {email: email}
-        })
+        const user = await this.userRepository.findOne({ email })
 
         return user;
     }

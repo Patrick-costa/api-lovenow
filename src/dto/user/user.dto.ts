@@ -14,9 +14,11 @@ export class UserDTO{
     @IsInt()
     age: number = 0;
 
+    @IsString()
     email: string = "";
 
-    senha: string = "";
+    @IsString()
+    password: string = "";
 
     @IsString({ each: true })
     readonly interests: string[];

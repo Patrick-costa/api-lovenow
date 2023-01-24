@@ -17,24 +17,31 @@ import { MessageService } from './services/message/message.service';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import * as dotenv from 'dotenv';
+import { AuthService } from './auth/service/auth.service';
+import { AuthController } from './auth/controller/auth.controller';
 dotenv.config();
 
+export const jwtConfig = {
+  secret: 'mysecretkey',
+  signOptions: {
+    expiresIn: '1d',
+  },
+};
+
 @Module({
-    imports: [TypeOrmModule.forFeature([
-        User,
-        Location,
-        Chat,
-        Message,
-        Interests,
-        AgeRange
-    ]),
-    PassportModule.register({ defaultStrategy: 'jwt' }),
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '60s' },
-    }),
-    ],
-    controllers: [UserController, LikeController, ChatController, MessageController],
-    providers: [UserService, LikeService, ChatService, MessageService]
+  imports: [
+  PassportModule.register({ defaultStrategy: 'jwt' }),
+  JwtModule.register(jwtConfig),
+  TypeOrmModule.forFeature([
+    User,
+    Location,
+    Chat,
+    Message,
+    Interests,
+    AgeRange
+  ]),
+  ],
+  controllers: [UserController, LikeController, ChatController, MessageController, AuthController],
+  providers: [UserService, LikeService, ChatService, MessageService, AuthService]
 })
-export class EntitiesModule {}
+export class EntitiesModule { }
