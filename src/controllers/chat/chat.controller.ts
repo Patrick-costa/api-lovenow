@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Param } from "@nestjs/common";
+import { Controller, Delete, Get, Param, Req } from "@nestjs/common";
 import { ChatService } from "src/services/chat/chat.service";
 import { UseInterceptors, UseGuards } from '@nestjs/common';
 import { AuthGuard } from "src/auth/guards/auth.guard"; 
@@ -14,8 +14,11 @@ export class ChatController {
     }
 
     @Get()
-    findAll(){
-        return this.chatService.findAllChats()
+    findAll(
+        @Req() req
+    ){
+        const token = req.headers.authorization.split(' ')[1];
+        return this.chatService.findAllChats(token)
     }
 
     @Delete(":id")

@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Users } from "aws-sdk/clients/budgets";
 import { ChatDTO } from "src/dto/chat/chat.dto";
@@ -15,7 +16,8 @@ export class ChatService {
     constructor(
         @InjectRepository(Chat)
         private chatRepository: Repository<Chat>,
-        private dbconn: Connection
+        private dbconn: Connection,
+        private jwtService: JwtService
     ) {
 
     }
@@ -25,8 +27,8 @@ export class ChatService {
         return this.chatRepository.save(chat);
     }
 
-    async findAllChats() {
-        const id = 19;
+    async findAllChats(token: string) {
+        const id = this.jwtService.verify(token).sub;
 
         const chats = await this.dbconn.manager.query(`
         SELECT * FROM chat AS c INNER JOIN chat_user AS cu ON cu.chatId  = 
