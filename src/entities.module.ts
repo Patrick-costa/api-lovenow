@@ -19,6 +19,8 @@ import { PassportModule } from '@nestjs/passport';
 import * as dotenv from 'dotenv';
 import { AuthService } from './auth/service/auth.service';
 import { AuthController } from './auth/controller/auth.controller';
+import { APP_PIPE } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 dotenv.config();
 
 export const jwtConfig = {
@@ -42,6 +44,13 @@ export const jwtConfig = {
   ]),
   ],
   controllers: [UserController, LikeController, ChatController, MessageController, AuthController],
-  providers: [UserService, LikeService, ChatService, MessageService, AuthService]
+  providers: [UserService, LikeService, ChatService, MessageService, AuthService, {
+    provide: APP_PIPE,
+    useValue: new ValidationPipe({
+      whitelist: true, // Só aceita as proriedades que estiverem no DTO
+      forbidNonWhitelisted: true, // RETORNA ERRO SE TIVER ATRIBUTO A MAIS NO OBJETO
+      transform: true, // TIPA O BODY DA REQUISIÇÃO
+    }),
+  },]
 })
 export class EntitiesModule { }
