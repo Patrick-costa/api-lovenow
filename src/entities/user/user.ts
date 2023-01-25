@@ -3,6 +3,7 @@ import { Location } from "../location/location";
 import { Interests } from "../interests/interests";
 import { AgeRange } from "../age_range/age_range";
 import { Chat } from "../chat/chat";
+import { Pictures } from "../pictures/pictures";
 
 
 @Entity()
@@ -49,7 +50,7 @@ export class User{
 
 
     @Column()
-    privacy: boolean;
+    privacy: boolean = false;
 
     @ManyToMany(type => User)
     @JoinTable({
@@ -70,4 +71,7 @@ export class User{
 
     @Column({nullable: true})
     photo: string;
+
+    @ManyToOne(type => Pictures, pics => pics.user)
+    pics: Pictures;
 }

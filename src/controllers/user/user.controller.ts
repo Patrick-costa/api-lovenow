@@ -4,7 +4,7 @@ import { UserDTO } from "src/dto/user/user.dto";
 import { UserService } from "src/services/user/user.service";
 import { UseInterceptors, UseGuards } from '@nestjs/common';
 import { AuthGuard } from "src/auth/guards/auth.guard"; 
-
+import { ApiResponse } from '@nestjs/swagger'
 
 @Controller('user')
 export class UserController {
@@ -15,6 +15,7 @@ export class UserController {
 
     }
 
+    @ApiResponse({status: 200, description: "OK", type: UserDTO})
     @UseGuards(AuthGuard)
     @Get('profile')
     findUser(
@@ -24,6 +25,7 @@ export class UserController {
         return this.userService.getUserByToken(token);
     }
 
+    @ApiResponse({status: 200, description: "OK", type: UserDTO})
     @UseGuards(AuthGuard)
     @Get()
     findAll(){
